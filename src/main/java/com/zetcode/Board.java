@@ -44,8 +44,8 @@ public class Board extends JPanel {
     private int minesLeft;
     private Image[] img;
 
-    private int allCells;
-    private final JLabel statusbar;
+    private int allCells;           // Total number of cells on the board -- should be N_ROWS * N_COLS
+    private final JLabel statusbar; // Tracks the number of flags left and let's you know if you won or lost the game
 
 
     public Board(JLabel statusbar) {
@@ -73,84 +73,85 @@ public class Board extends JPanel {
     private void newGame() {
         int cell;
 
-        var random = new Random();
-        inGame = true;
-        minesLeft = N_MINES;
+        var random = new Random();           // Init Random number generator
+        inGame = true;                       // Mark the game as started
+        minesLeft = N_MINES;                 // Set the number of mines to place
 
-        allCells = N_ROWS * N_COLS;
-        field = new int[allCells];
+        allCells = N_ROWS * N_COLS;          // Get total number of cells -- also used when checking fora cell's neighbors
+        field = new int[allCells];           // contains all the cells on the board
 
-        for (int i = 0; i < allCells; i++) {
+        for (int i = 0; i < allCells; i++) {  // Set all the board cells as empty and covered
             field[i] = COVER_FOR_CELL;
         }
 
-        statusbar.setText(Integer.toString(minesLeft));
+        statusbar.setText(Integer.toString(minesLeft));  // Update the status to show no mines are currently marked
 
         int i = 0;
 
-        while (i < N_MINES) {
-            int position = (int) (allCells * random.nextDouble());
+        while (i < N_MINES) {                                       // Start planting mines
+            int position = (int) (allCells * random.nextDouble());  // Pick a random location
 
-            if (field[position] != COVERED_MINE_CELL) {
-                int current_col = position % N_COLS;
-                field[position] = COVERED_MINE_CELL;
-                i++;
+            if (field[position] != COVERED_MINE_CELL) {             // If it doesn't already contain a mine
+                int current_col = position % N_COLS;                //    Figure out which column it's in
+                field[position] = COVERED_MINE_CELL;                //    Set the cell to an unflagged mine
+                i++;                                                //    Increment the number of mines set
 
-                if (current_col > 0) {
-                    cell = position - 1 - N_COLS;
-                    if (cell >= 0) {
-                        if (field[cell] != COVERED_MINE_CELL) {
-                            field[cell] += 1;
-                        }
-                    }
-                    cell = position - 1;
-                    if (cell >= 0) {
-                        if (field[cell] != COVERED_MINE_CELL) {
-                            field[cell] += 1;
+                if (current_col > 0) {                              // If the cell isn't on the left edge
+                    cell = position - 1 - N_COLS;                   //    Get the upper left neighbor
+                    if (cell >= 0) {                                //    If it's on the board
+                        if (field[cell] != COVERED_MINE_CELL) {     //       and it doesn't contain a mine
+                            field[cell] += 1;                       //       increment the number of mined neighbors
                         }
                     }
 
-                    cell = position + N_COLS - 1;
-                    if (cell < allCells) {
-                        if (field[cell] != COVERED_MINE_CELL) {
-                            field[cell] += 1;
+                    cell = position - 1;                         //    Get the upper left neighbor
+                    if (cell >= 0) {                             //    If it's on the board
+                        if (field[cell] != COVERED_MINE_CELL) {  //       and it doesn't contain a mine
+                            field[cell] += 1;                    //       increment the number of mined neighbors
+                        }
+                    }
+
+                    cell = position + N_COLS - 1;                //    Get the upper left neighbor
+                    if (cell < allCells) {                       //    If it's on the board
+                        if (field[cell] != COVERED_MINE_CELL) {  //       and it doesn't contain a mine
+                            field[cell] += 1;                    //       increment the number of mined neighbors
                         }
                     }
                 }
 
-                cell = position - N_COLS;
-                if (cell >= 0) {
-                    if (field[cell] != COVERED_MINE_CELL) {
-                        field[cell] += 1;
+                cell = position - N_COLS;                    //    Get the upper left neighbor
+                if (cell >= 0) {                             //    If it's on the board
+                    if (field[cell] != COVERED_MINE_CELL) {  //       and it doesn't contain a mine
+                        field[cell] += 1;                    //       increment the number of mined neighbors
                     }
                 }
 
-                cell = position + N_COLS;
-                if (cell < allCells) {
-                    if (field[cell] != COVERED_MINE_CELL) {
-                        field[cell] += 1;
+                cell = position + N_COLS;                    //    Get the upper left neighbor
+                if (cell < allCells) {                       //    If it's on the board
+                    if (field[cell] != COVERED_MINE_CELL) {  //       and it doesn't contain a mine
+                        field[cell] += 1;                    //       increment the number of mined neighbors
                     }
                 }
 
-                if (current_col < (N_COLS - 1)) {
-                    cell = position - N_COLS + 1;
-                    if (cell >= 0) {
-                        if (field[cell] != COVERED_MINE_CELL) {
-                            field[cell] += 1;
+                if (current_col < (N_COLS - 1)) {                // If the cell isn't on the right edge
+                    cell = position - N_COLS + 1;                //    Get the upper left neighbor
+                    if (cell >= 0) {                             //    If it's on the board
+                        if (field[cell] != COVERED_MINE_CELL) {  //       and it doesn't contain a mine
+                            field[cell] += 1;                    //       increment the number of mined neighbors
                         }
                     }
 
-                    cell = position + N_COLS + 1;
-                    if (cell < allCells) {
-                        if (field[cell] != COVERED_MINE_CELL) {
-                            field[cell] += 1;
+                    cell = position + N_COLS + 1;                //    Get the upper left neighbor
+                    if (cell < allCells) {                       //    If it's on the board
+                        if (field[cell] != COVERED_MINE_CELL) {  //       and it doesn't contain a mine
+                            field[cell] += 1;                    //       increment the number of mined neighbors
                         }
                     }
 
-                    cell = position + 1;
-                    if (cell < allCells) {
-                        if (field[cell] != COVERED_MINE_CELL) {
-                            field[cell] += 1;
+                    cell = position + 1;                         //    Get the upper left neighbor
+                    if (cell < allCells) {                       //    If it's on the board
+                        if (field[cell] != COVERED_MINE_CELL) {  //       and it doesn't contain a mine
+                            field[cell] += 1;                    //       increment the number of mined neighbors
                         }
                     }
                 }
@@ -158,138 +159,138 @@ public class Board extends JPanel {
         }
     }
 
-
-    private void find_empty_cells(int j) {
+    // When a cell gets opened and it's empty, open all the neighbors and if one of them is empty, repeat.
+    // This is how most of the board gets exposed.
+    private void find_empty_cells(int j) {  // j is an empty cell that just got opened so open it's neighbors
         int current_col = j % N_COLS;
         int cell;
 
-        if (current_col > 0) {
-            cell = j - N_COLS - 1;
-            if (cell >= 0) {
-                if (field[cell] > MINE_CELL) {
-                    field[cell] -= COVER_FOR_CELL;
-                    if (field[cell] == EMPTY_CELL) {
+        if (current_col > 0) {                         // If the cell isn't on the left edge of the board
+            cell = j - N_COLS - 1;                     // Get the cell to the upper left
+            if (cell >= 0) {                           // If it's not off the board
+                if (field[cell] > MINE_CELL) {         // If it's covered
+                    field[cell] -= COVER_FOR_CELL;     //   uncover it
+                    if (field[cell] == EMPTY_CELL) {   //   If it's empty, open it's neighbors
                         find_empty_cells(cell);
                     }
                 }
             }
 
-            cell = j - 1;
-            if (cell >= 0) {
-                if (field[cell] > MINE_CELL) {
-                    field[cell] -= COVER_FOR_CELL;
-                    if (field[cell] == EMPTY_CELL) {
+            cell = j - 1;                             // Get the cell to the left
+            if (cell >= 0) {                          // If it's not off the board
+                if (field[cell] > MINE_CELL) {        // If it's covered
+                    field[cell] -= COVER_FOR_CELL;    //   uncover it
+                    if (field[cell] == EMPTY_CELL) {  //   If it's empty, open it's neighbors
                         find_empty_cells(cell);
                     }
                 }
             }
 
-            cell = j + N_COLS - 1;
-            if (cell < allCells) {
-                if (field[cell] > MINE_CELL) {
-                    field[cell] -= COVER_FOR_CELL;
-                    if (field[cell] == EMPTY_CELL) {
+            cell = j + N_COLS - 1;                    // Get the cell to the lower left
+            if (cell < allCells) {                    // If it's not off the board
+                if (field[cell] > MINE_CELL) {        // If it's covered
+                    field[cell] -= COVER_FOR_CELL;    //   uncover it
+                    if (field[cell] == EMPTY_CELL) {  //   If it's empty, open it's neighbors
                         find_empty_cells(cell);
                     }
                 }
             }
         }
 
-        cell = j - N_COLS;
-        if (cell >= 0) {
-            if (field[cell] > MINE_CELL) {
-                field[cell] -= COVER_FOR_CELL;
-                if (field[cell] == EMPTY_CELL) {
+        cell = j - N_COLS;                        // Get the cell directly above
+        if (cell >= 0) {                          // If it's not off the board
+            if (field[cell] > MINE_CELL) {        // If it's covered
+                field[cell] -= COVER_FOR_CELL;    //   uncover it
+                if (field[cell] == EMPTY_CELL) {  //   If it's empty, open it's neighbors
                     find_empty_cells(cell);
                 }
             }
         }
 
-        cell = j + N_COLS;
-        if (cell < allCells) {
-            if (field[cell] > MINE_CELL) {
-                field[cell] -= COVER_FOR_CELL;
-                if (field[cell] == EMPTY_CELL) {
+        cell = j + N_COLS;                         // Get the cell directly below
+        if (cell < allCells) {                     // If it's not off the board
+            if (field[cell] > MINE_CELL) {         // If it's covered
+                field[cell] -= COVER_FOR_CELL;     //   uncover it
+                if (field[cell] == EMPTY_CELL) {   //   If it's empty, open it's neighbors
                     find_empty_cells(cell);
                 }
             }
         }
 
-        if (current_col < (N_COLS - 1)) {
-            cell = j - N_COLS + 1;
-            if (cell >= 0) {
-                if (field[cell] > MINE_CELL) {
-                    field[cell] -= COVER_FOR_CELL;
-                    if (field[cell] == EMPTY_CELL) {
+        if (current_col < (N_COLS - 1)) {             // If the cell isn't on the right edge of the board
+            cell = j - N_COLS + 1;                    // Get the upper right cell
+            if (cell >= 0) {                          // If it's not off the board
+                if (field[cell] > MINE_CELL) {        // If it's covered
+                    field[cell] -= COVER_FOR_CELL;    //   uncover it
+                    if (field[cell] == EMPTY_CELL) {  //   If it's empty, open it's neighbors
                         find_empty_cells(cell);
                     }
                 }
             }
 
-            cell = j + N_COLS + 1;
-            if (cell < allCells) {
-                if (field[cell] > MINE_CELL) {
-                    field[cell] -= COVER_FOR_CELL;
-                    if (field[cell] == EMPTY_CELL) {
+            cell = j + N_COLS + 1;                     // Get the lower right cell
+            if (cell < allCells) {                     // If it's not off the board
+                if (field[cell] > MINE_CELL) {         // If it's covered
+                    field[cell] -= COVER_FOR_CELL;     //   uncover it
+                    if (field[cell] == EMPTY_CELL) {   //   If it's empty, open it's neighbors
                         find_empty_cells(cell);
                     }
                 }
             }
 
-            cell = j + 1;
-            if (cell < allCells) {
-                if (field[cell] > MINE_CELL) {
-                    field[cell] -= COVER_FOR_CELL;
-                    if (field[cell] == EMPTY_CELL) {
+            cell = j + 1;                              // Get the cell to the right
+            if (cell < allCells) {                     // If it's not off the board
+                if (field[cell] > MINE_CELL) {         // If it's covered
+                    field[cell] -= COVER_FOR_CELL;     //   uncover it
+                    if (field[cell] == EMPTY_CELL) {   //   If it's empty, open it's neighbors
                         find_empty_cells(cell);
                     }
                 }
             }
         }
-
     }
 
 
     @Override
     public void paintComponent(Graphics g) {
-        int uncover = 0;
+        int uncover = 0;                          // Used to track the number of unflagged mines
 
-        for (int i = 0; i < N_ROWS; i++) {
-            for (int j = 0; j < N_COLS; j++) {
-                int cell = field[(i * N_COLS) + j];
+        for (int i = 0; i < N_ROWS; i++) {            // For each row
+            for (int j = 0; j < N_COLS; j++) {        // For each column
+                int cell = field[(i * N_COLS) + j];   // Get the cell value
 
-                if (inGame && cell == MINE_CELL) {
-                    inGame = false;
+                if (inGame && cell == MINE_CELL) {     // If the game isn't over and it's an exposed mine
+                    inGame = false;                    //   the game is over
                 }
 
-                if (!inGame) {
-                    if (cell == COVERED_MINE_CELL) {
-                        cell = DRAW_MINE;
-                    } else if (cell == MARKED_MINE_CELL) {
-                        cell = DRAW_MARK;
-                    } else if (cell > COVERED_MINE_CELL) {
-                        cell = DRAW_WRONG_MARK;
-                    } else if (cell > MINE_CELL) {
-                        cell = DRAW_COVER;
+                if (!inGame) {                             // If the game is over
+                    if (cell == COVERED_MINE_CELL) {       //    and the cell is a covered mine
+                        cell = DRAW_MINE;                  //        set it to display a mine
+                    } else if (cell == MARKED_MINE_CELL) { //    and the cell is a flagged mine
+                        cell = DRAW_MARK;                  //        set it to display a flag
+                    } else if (cell > COVERED_MINE_CELL) { //    and the cell is incorrectly flagged
+                        cell = DRAW_WRONG_MARK;            //        set it to display an incorrect flag
+                    } else if (cell > MINE_CELL) {         //    and the value is > 9 ?? should have been handled by COVERED_MINE_CELL and MARKED_MINE_CELL
+                        cell = DRAW_COVER;                 //        set it to display a covered cell
                     }
-                } else {
-                    if (cell > COVERED_MINE_CELL) {
-                        cell = DRAW_MARK;
-                    } else if (cell > MINE_CELL) {
-                        cell = DRAW_COVER;
-                        uncover++;
+                } else {                                   // If the game is still going
+                    if (cell > COVERED_MINE_CELL) {        //    and the cell is a flagged mine
+                        cell = DRAW_MARK;                  //        set it to display a flag
+                    } else if (cell > MINE_CELL) {         //    and the cell is an unflagged mine
+                        cell = DRAW_COVER;                 //         set it to display a covered cell
+                        uncover++;                         //         increment the count of unflagged mines
                     }
                 }
 
-                g.drawImage(img[cell], (j * CELL_SIZE), (i * CELL_SIZE), this);
+                g.drawImage(img[cell], (j * CELL_SIZE), (i * CELL_SIZE), this);  // paint this cell on the board
             }
         }
 
-        if (uncover == 0 && inGame) {
-            inGame = false;
-            statusbar.setText("Game won");
-        } else if (!inGame) {
-            statusbar.setText("Game lost");
+        if (uncover == 0 && inGame) {       // If all the mines are marked and the game is not over
+            inGame = false;                 //    Mark the game as over
+            statusbar.setText("Game won");  //    Declare the player won the game
+        } else if (!inGame) {               // If the game is over
+            statusbar.setText("Game lost"); //    Declare the player lost the game
         }
     }
 
@@ -298,23 +299,23 @@ public class Board extends JPanel {
 
         @Override
         public void mousePressed(MouseEvent e) {
-            int x = e.getX(); // Raw x value
-            int y = e.getY(); // Raw y value
+            int x = e.getX();                      // Raw x value
+            int y = e.getY();                      // Raw y value
 
-            int cCol = x / CELL_SIZE; // Column clicked in
-            int cRow = y / CELL_SIZE; // Row clicked in
+            int cCol = x / CELL_SIZE;              // Selected column
+            int cRow = y / CELL_SIZE;              // Selected row
 
-            boolean doRepaint = false;
+            boolean doRepaint = false;             // Don't repaint the board unless something's changed
 
-            if (!inGame) {  // If game is over, restart it then process the click.
-                newGame();
-                repaint();
+            if (!inGame) {                         // If game is over
+                newGame();                         //    start a new game
+                repaint();                         //    display the new board
             }
 
             if ((x < N_COLS * CELL_SIZE) && (y < N_ROWS * CELL_SIZE)) { // If click is on the grid
 
-                if (e.getButton() == MouseEvent.BUTTON3) {              // On right-button click
-                    if (field[(cRow * N_COLS) + cCol] > MINE_CELL) {               // If the cell is still covered (unknown value)
+                if (e.getButton() == MouseEvent.BUTTON3) {              // On a right-button click
+                    if (field[(cRow * N_COLS) + cCol] > MINE_CELL) {    //    If the cell is still covered (unknown value)
                         doRepaint = true;
 
                         if (field[(cRow * N_COLS) + cCol] <= COVERED_MINE_CELL) { // If cell isn't flagged
