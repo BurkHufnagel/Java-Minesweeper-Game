@@ -15,8 +15,13 @@ public class Board extends JPanel {
     private final int NUM_IMAGES = 13;
     private final int CELL_SIZE = 15;
 
-    private final int COVER_FOR_CELL = 10;
-    private final int MARK_FOR_CELL = 10;
+    // Each value in the 'field' array represents one cell.
+    // The value stored in a cell is a combination of several things.
+    // Each cell is initialized with COVER_FOR_CELLL
+
+
+    private final int COVER_FOR_CELL = 10;  // All cells start "covered" meaning we don't know what's in it.Same value as MARK_FOR_CELL -- confusion?
+    private final int MARK_FOR_CELL = 10;   // Added when a cell is flagged
     private final int EMPTY_CELL = 0;
     private final int MINE_CELL = 9;
     private final int COVERED_MINE_CELL = MINE_CELL + COVER_FOR_CELL;
@@ -49,18 +54,19 @@ public class Board extends JPanel {
     }
 
 
+    // The 'board' is initialized before a game starts, so you might find a mine on your first move.
     private void initBoard() {
         setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
 
-        img = new Image[NUM_IMAGES];
+        img = new Image[NUM_IMAGES];  // Holds images used to draw the current board state
 
-        for (int i = 0; i < NUM_IMAGES; i++) {
+        for (int i = 0; i < NUM_IMAGES; i++) {   // Load the images into memory
             var path = "src/resources/" + i + ".png";
             img[i] = (new ImageIcon(path)).getImage();
         }
 
         addMouseListener(new MinesAdapter());
-        newGame();
+        newGame(); // populates the board and resets the game logic
     }
 
 
@@ -246,7 +252,6 @@ public class Board extends JPanel {
 
     @Override
     public void paintComponent(Graphics g) {
-
         int uncover = 0;
 
         for (int i = 0; i < N_ROWS; i++) {
@@ -276,8 +281,7 @@ public class Board extends JPanel {
                     }
                 }
 
-                g.drawImage(img[cell], (j * CELL_SIZE),
-                        (i * CELL_SIZE), this);
+                g.drawImage(img[cell], (j * CELL_SIZE), (i * CELL_SIZE), this);
             }
         }
 
@@ -294,61 +298,62 @@ public class Board extends JPanel {
 
         @Override
         public void mousePressed(MouseEvent e) {
-            int x = e.getX();
-            int y = e.getY();
+            int x = e.getX(); // Raw x value
+            int y = e.getY(); // Raw y value
 
-            int cCol = x / CELL_SIZE;
-            int cRow = y / CELL_SIZE;
+            int cCol = x / CELL_SIZE; // Column clicked in
+            int cRow = y / CELL_SIZE; // Row clicked in
 
             boolean doRepaint = false;
 
-            if (!inGame) {
+            if (!inGame) {  // If game is over, restart it then process the click.
                 newGame();
                 repaint();
             }
 
-            if ((x < N_COLS * CELL_SIZE) && (y < N_ROWS * CELL_SIZE)) {
-                if (e.getButton() == MouseEvent.BUTTON3) {
-                    if (field[(cRow * N_COLS) + cCol] > MINE_CELL) {
+            if ((x < N_COLS * CELL_SIZE) && (y < N_ROWS * CELL_SIZE)) { // If click is on the grid
+
+                if (e.getButton() == MouseEvent.BUTTON3) {              // On right-button click
+                    if (field[(cRow * N_COLS) + cCol] > MINE_CELL) {               // If the cell is still covered (unknown value)
                         doRepaint = true;
 
-                        if (field[(cRow * N_COLS) + cCol] <= COVERED_MINE_CELL) {
-                            if (minesLeft > 0) {
-                                field[(cRow * N_COLS) + cCol] += MARK_FOR_CELL;
-                                minesLeft--;
-                                String msg = Integer.toString(minesLeft);
+                        if (field[(cRow * N_COLS) + cCol] <= COVERED_MINE_CELL) { // If cell isn't flagged
+                            if (minesLeft > 0) {                       // If there are flags left
+                                field[(cRow * N_COLS) + cCol] += MARK_FOR_CELL;   // Flag this cell
+                                minesLeft--;                             // Decrement the available flags
+                                String msg = Integer.toString(minesLeft); // Update the status to show the number of flags left
                                 statusbar.setText(msg);
-                            } else {
-                                statusbar.setText("No marks left");
+                            } else {                                   // If there aren't any flags left
+                                statusbar.setText("No marks left");    // Update status to say "No marks left"
                             }
-                        } else {
-                            field[(cRow * N_COLS) + cCol] -= MARK_FOR_CELL;
-                            minesLeft++;
-                            String msg = Integer.toString(minesLeft);
+                        } else {                                       // If the cell is flagged
+                            field[(cRow * N_COLS) + cCol] -= MARK_FOR_CELL;       // Remove the flag
+                            minesLeft++;                               // Increment the number of available flags
+                            String msg = Integer.toString(minesLeft);  // Update the status to show the number of flags left
                             statusbar.setText(msg);
                         }
                     }
-                } else {
-                    if (field[(cRow * N_COLS) + cCol] > COVERED_MINE_CELL) {
+                } else {                                              // If it's not a right click
+                    if (field[(cRow * N_COLS) + cCol] > COVERED_MINE_CELL) {     // If it's flagged, ignore the click
                         return;
                     }
 
-                    if ((field[(cRow * N_COLS) + cCol] > MINE_CELL)
+                    if ((field[(cRow * N_COLS) + cCol] > MINE_CELL)               // If the cell is unopened and it isn't marked
                             && (field[(cRow * N_COLS) + cCol] < MARKED_MINE_CELL)) {
-                        field[(cRow * N_COLS) + cCol] -= COVER_FOR_CELL;
+                        field[(cRow * N_COLS) + cCol] -= COVER_FOR_CELL;          // Uncover (open) it and let the board know it's dirty (repaint)
                         doRepaint = true;
 
-                        if (field[(cRow * N_COLS) + cCol] == MINE_CELL) {
+                        if (field[(cRow * N_COLS) + cCol] == MINE_CELL) {         // If the call contains a mine, mark the game as ended
                             inGame = false;
                         }
 
-                        if (field[(cRow * N_COLS) + cCol] == EMPTY_CELL) {
+                        if (field[(cRow * N_COLS) + cCol] == EMPTY_CELL) {        // If the cell has no mines or neighbors with mines, open its neighbors. (Recursive call)
                             find_empty_cells((cRow * N_COLS) + cCol);
                         }
                     }
                 }
 
-                if (doRepaint) {
+                if (doRepaint) {  // Redraw the board if needed
                     repaint();
                 }
             }

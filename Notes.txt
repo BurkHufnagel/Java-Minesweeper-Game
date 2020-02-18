@@ -1,0 +1,37 @@
+Minesweeper Notes:
+
+Objects of interest:
+    Image[] img -- each image is one state for a cell:
+        0 - empty open cell - means no neighbors have a mine
+        1-8 - how many neighbors have a mine
+        9 - cell containing a mine
+        10 - Unopened cell - blank tile
+        11 - Unopened cell flagged as having a mine
+        12 - Incorrectly flagged cell -- only shown when the game is lost
+
+    int field[] -- holds all the cell values for the board
+
+    Class MinesAdapter handles mouse clicks
+
+   Logic:
+    Cell neighbors are the cells a Chess King could move to from that cell.
+        Examples given the 3x4 board below:
+          00 01 02 03   Cell 00 neighbors are 01, 04, and 05
+          04 05 06 07   Cell 01 neighbors are 00, 02, 04, 05, and 06
+          08 09 10 11   Cell 11 eighbors are  06, 07, and 10
+
+
+    When the game is over, any click (right or left) will start a new game
+
+    Right-clicking a covered cell toggles whether or not it is flagged.
+        When flagged, MARK_FOR_CELL is added to the cell value.
+        When the flag is removed, MARK_FOR_CELL is subtracted
+        Either way, the status bar is set to the number of flags left, or 'No marks left' if there are none.
+    Right-clicking a covered cell does nothing
+
+    Left-clicking a flagged cell does nothing
+
+
+    During paint() the game tracks the number of unflagged mine cells.
+        If it's zero and the game is not over, the player wins.
+    After paint() draws the board and checks for a win, if inGame is false the player loses.
