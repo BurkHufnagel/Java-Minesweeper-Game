@@ -104,14 +104,14 @@ public class Board extends JPanel {
                         }
                     }
 
-                    cell = position - 1;                         //    Get the upper left neighbor
+                    cell = position - 1;                         //    Get the left side neighbor
                     if (cell >= 0) {                             //    If it's on the board
                         if (field[cell] != COVERED_MINE_CELL) {  //       and it doesn't contain a mine
                             field[cell] += 1;                    //       increment the number of mined neighbors
                         }
                     }
 
-                    cell = position + N_COLS - 1;                //    Get the upper left neighbor
+                    cell = position - 1 + N_COLS;                //    Get the lower left neighbor
                     if (cell < allCells) {                       //    If it's on the board
                         if (field[cell] != COVERED_MINE_CELL) {  //       and it doesn't contain a mine
                             field[cell] += 1;                    //       increment the number of mined neighbors
@@ -119,14 +119,14 @@ public class Board extends JPanel {
                     }
                 }
 
-                cell = position - N_COLS;                    //    Get the upper left neighbor
+                cell = position - N_COLS;                    //    Get the upper neighbor
                 if (cell >= 0) {                             //    If it's on the board
                     if (field[cell] != COVERED_MINE_CELL) {  //       and it doesn't contain a mine
                         field[cell] += 1;                    //       increment the number of mined neighbors
                     }
                 }
 
-                cell = position + N_COLS;                    //    Get the upper left neighbor
+                cell = position + N_COLS;                    //    Get the lower neighbor
                 if (cell < allCells) {                       //    If it's on the board
                     if (field[cell] != COVERED_MINE_CELL) {  //       and it doesn't contain a mine
                         field[cell] += 1;                    //       increment the number of mined neighbors
@@ -134,21 +134,21 @@ public class Board extends JPanel {
                 }
 
                 if (current_col < (N_COLS - 1)) {                // If the cell isn't on the right edge
-                    cell = position - N_COLS + 1;                //    Get the upper left neighbor
+                    cell = position + 1 - N_COLS;                //    Get the upper right neighbor
                     if (cell >= 0) {                             //    If it's on the board
                         if (field[cell] != COVERED_MINE_CELL) {  //       and it doesn't contain a mine
                             field[cell] += 1;                    //       increment the number of mined neighbors
                         }
                     }
 
-                    cell = position + N_COLS + 1;                //    Get the upper left neighbor
+                    cell = position + 1 + N_COLS;                //    Get the lower right neighbor
                     if (cell < allCells) {                       //    If it's on the board
                         if (field[cell] != COVERED_MINE_CELL) {  //       and it doesn't contain a mine
                             field[cell] += 1;                    //       increment the number of mined neighbors
                         }
                     }
 
-                    cell = position + 1;                         //    Get the upper left neighbor
+                    cell = position + 1;                         //    Get the right side neighbor
                     if (cell < allCells) {                       //    If it's on the board
                         if (field[cell] != COVERED_MINE_CELL) {  //       and it doesn't contain a mine
                             field[cell] += 1;                    //       increment the number of mined neighbors
