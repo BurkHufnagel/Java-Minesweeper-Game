@@ -11,14 +11,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class Board extends JPanel {
-
-    private final int NUM_IMAGES = 13;
+    protected final int NUM_IMAGES = 13;
     private final int CELL_SIZE = 15;
-
-    // Each value in the 'field' array represents one cell.
-    // The value stored in a cell is a combination of several things.
-    // Each cell is initialized with COVER_FOR_CELLL
-
 
     private final int COVER_FOR_CELL = 10;  // All cells start "covered" meaning we don't know what's in it.Same value as MARK_FOR_CELL -- confusion?
     private final int MARK_FOR_CELL = 10;   // Added when a cell is flagged
@@ -42,7 +36,7 @@ public class Board extends JPanel {
     private int[] field;
     private boolean inGame;
     private int minesLeft;
-    private Image[] img;
+    protected Image[] img;
 
     private int allCells;           // Total number of cells on the board -- should be N_ROWS * N_COLS
     private final JLabel statusbar; // Tracks the number of flags left and let's you know if you won or lost the game
@@ -50,12 +44,11 @@ public class Board extends JPanel {
 
     public Board(JLabel statusbar) {
         this.statusbar = statusbar;
-        initBoard();
     }
 
 
     // The 'board' is initialized before a game starts, so you might find a mine on your first move.
-    private void initBoard() {
+    protected void initBoard() {
         setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
 
         img = new Image[NUM_IMAGES];  // Holds images used to draw the current board state
@@ -70,7 +63,7 @@ public class Board extends JPanel {
     }
 
 
-    private void newGame() {
+    protected void newGame() {
         int cell;
 
         var random = new Random();           // Init Random number generator

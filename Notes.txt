@@ -13,7 +13,12 @@ Objects of interest:
 
     Class MinesAdapter handles mouse clicks
 
-   Logic:
+    Board.BOARD_WIDTH and Board.BOARD_HEIGHT are used once during initialization when calling
+       the setPreferredSize method. Not needed as properties.
+
+
+
+Logic:
     Cell neighbors are the cells a Chess King could move to from that cell.
         Examples given the 3x4 board below:
           00 01 02 03   Cell 00 neighbors are 01, 04, and 05

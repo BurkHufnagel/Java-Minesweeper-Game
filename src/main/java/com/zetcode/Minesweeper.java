@@ -14,19 +14,17 @@ import javax.swing.JLabel;
 
 public class Minesweeper extends JFrame {
 
-    private JLabel statusbar;
-
     public Minesweeper() {
-
         initUI();
     }
 
     private void initUI() {
-
-        statusbar = new JLabel("");
+        JLabel statusbar = new JLabel("");
         add(statusbar, BorderLayout.SOUTH);
 
-        add(new Board(statusbar));
+        Board board = new Board(statusbar);
+        board.initBoard();
+        add(board);
 
         setResizable(false);
         pack();
@@ -37,9 +35,7 @@ public class Minesweeper extends JFrame {
     }
 
     public static void main(String[] args) {
-
         EventQueue.invokeLater(() -> {
-
             var ex = new Minesweeper();
             ex.setVisible(true);
         });
