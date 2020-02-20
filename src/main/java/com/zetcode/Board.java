@@ -36,7 +36,7 @@ public class Board extends JPanel {
     private int[] field;
     private boolean inGame;
     private int minesLeft;
-    protected Image[] img;
+    protected Image[] images;
 
     private int allCells;           // Total number of cells on the board -- should be N_ROWS * N_COLS
     private final JLabel statusbar; // Tracks the number of flags left and let's you know if you won or lost the game
@@ -51,15 +51,21 @@ public class Board extends JPanel {
     protected void initBoard() {
         setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
 
-        img = new Image[NUM_IMAGES];  // Holds images used to draw the current board state
+        images = loadImages();
+        addMouseListener(new MinesAdapter());
+        newGame(); // populates the board and resets the game logic
+    }
+
+
+    protected Image[] loadImages() {
+        Image[] images = new Image[NUM_IMAGES];
 
         for (int i = 0; i < NUM_IMAGES; i++) {   // Load the images into memory
             var path = "src/resources/" + i + ".png";
-            img[i] = (new ImageIcon(path)).getImage();
+            images[i] = (new ImageIcon(path)).getImage();
         }
 
-        addMouseListener(new MinesAdapter());
-        newGame(); // populates the board and resets the game logic
+        return images;
     }
 
 
@@ -275,7 +281,7 @@ public class Board extends JPanel {
                     }
                 }
 
-                g.drawImage(img[cell], (j * CELL_SIZE), (i * CELL_SIZE), this);  // paint this cell on the board
+                g.drawImage(images[cell], (j * CELL_SIZE), (i * CELL_SIZE), this);  // paint this cell on the board
             }
         }
 
