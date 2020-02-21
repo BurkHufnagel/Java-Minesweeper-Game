@@ -138,18 +138,18 @@ class BoardSpec extends Specification {
 
 
     // The field layout for a 4x5 field with two adjoining empty (no mine or neighbors with mines) cells is as follows:
-    //    0   1   2   3    E  E  E  X
-    //    4   5   6   7    E  1  E  X
-    //    8   9  10  11    E  E  2  E
-    //   12  13  14  15    X  E  E  E
-    //   16  17  18  19    X  E  E  E
+    //    0   1   2   3    .   .   .   X
+    //    4   5   6   7    .   1   .   X
+    //    8   9  10  11    .   .   2   .
+    //   12  13  14  15    X   .   .   .
+    //   16  17  18  19    X   .   .   .
     def "when opening an empty cell (no mine) if a neighboring cell is also empty. then open it"() {
         given: "a board with two adjoining empty cells"
         Board board = populateBoardWithMinesAt([3, 7, 12, 16])
 
         when: "first empty cell is opened"
-        board.cells[3].uncover()
-        board.find_empty_cells(3)
+        board.cells[5].uncover()
+        board.find_empty_cells(5)
 
         then: "second empty cell should be opened"
         board.cells[10].isCovered() == false
@@ -160,13 +160,13 @@ class BoardSpec extends Specification {
         given: "a board with two adjoining empty cells"
         Board board = populateBoardWithMinesAt([3, 7, 12, 16])
 
-        and: "cell 10 is flagged"
+        and: "the second empty cell is flagged"
         board.cells[10].toggleFlagged()
 
 
         when: "first empty cell is opened"
-        board.cells[3].uncover()
-        board.find_empty_cells(3)
+        board.cells[5].uncover()
+        board.find_empty_cells(5)
 
         then: "second empty cell should not be opened"
         board.cells[10].isUncovered() == false
