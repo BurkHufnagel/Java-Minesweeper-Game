@@ -28,11 +28,11 @@ public class Board extends JPanel {
     protected final int DRAW_MARK = 11;
     protected final int DRAW_WRONG_MARK = 12;
 
-    private int numberOfRows = 16;
-    private int numberOfColumns = 16;
-    private int numberOfMines = 40;
+    protected int numberOfRows = 16;
+    protected int numberOfColumns = 16;
+    protected int numberOfMines = 40;
 
-    private Cell[] cells;
+    protected Cell[] cells;
 
     private boolean inGame;
     private int minesLeft;
@@ -126,14 +126,15 @@ public class Board extends JPanel {
 
     // When a cell gets opened and it's empty, then open all the neighbors and if one of them is empty, repeat.
     // This cascade is how most of the board gets exposed.
-    private void find_empty_cells(int position) {                  // position specifies an empty cell that just got opened, so open it's neighbors
+    protected void find_empty_cells(int position) {                // position specifies an empty cell that just got opened, so open it's neighbors
         int[] neighbors = getNeighbors(position);                  // Get the neighboring cell positions
 
         for(int index = 0; index < neighbors.length; index++) {
             int neighbor = neighbors[index];
-            if (cells[neighbor].isCovered()) {                    // If it's covered
-                cells[neighbor].uncover();                        //   uncover it
-                if (cells[neighbor].getMinedNeighbors() == 0) {   //   If it's empty, open it's neighbors
+            Cell cell = cells[neighbor];
+            if (cell.isCovered() && cell.isNotFlagged()) {        // If it's covered and not flagged
+                cell.uncover();                                   //   uncover it
+                if (cell.getMinedNeighbors() == 0) {              //   If it's empty, open it's neighbors
                     find_empty_cells(neighbor);
                 }
             }

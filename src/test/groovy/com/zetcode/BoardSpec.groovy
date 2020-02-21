@@ -46,7 +46,7 @@ class BoardSpec extends Specification {
 //        images.length ==  board.NUM_IMAGES
 //    }
 
-    // The field layout for a 4x5 field is as follows"
+    // The field layout for a 4x5 field is as follows:
     //    0   1   2   3
     //    4   5   6   7
     //    8   9  10  11
@@ -134,5 +134,58 @@ class BoardSpec extends Specification {
 
         then: "imageIndex should be DRAW_COVER"
         imageIndex == board.DRAW_COVER
+    }
+
+
+    // The field layout for a 4x5 field with two adjoining empty (no mine or neighbors with mines) cells is as follows:
+    //    0   1   2   3    E  E  E  X
+    //    4   5   6   7    E  1  E  X
+    //    8   9  10  11    E  E  2  E
+    //   12  13  14  15    X  E  E  E
+    //   16  17  18  19    X  E  E  E
+    def "when opening an empty cell (no mine) if a neighboring cell is also empty. then open it"() {
+        given: "a board with two adjoining empty cells"
+        Board board = populateBoardWithMinesAt([3, 7, 12, 16])
+
+        when: "first empty cell is opened"
+        board.cells[3].uncover()
+        board.find_empty_cells(3)
+
+        then: "second empty cell should be opened"
+        board.cells[10].isCovered() == false
+    }
+
+
+    def "when opening an empty cell (no mine) if a neighboring cell is also empty but flagged, then don't open it"() {
+        given: "a board with two adjoining empty cells"
+        Board board = populateBoardWithMinesAt([3, 7, 12, 16])
+
+        and: "cell 10 is flagged"
+        board.cells[10].toggleFlagged()
+
+
+        when: "first empty cell is opened"
+        board.cells[3].uncover()
+        board.find_empty_cells(3)
+
+        then: "second empty cell should not be opened"
+        board.cells[10].isUncovered() == false
+    }
+
+
+    Board populateBoardWithMinesAt(ArrayList<Integer> minedCells) {
+        Board board = new Board(new JLabel(""))
+        board.initBoard(5, 4, 0)
+
+        for(int position = 0; position < board.cells.length; position++) {
+            board.cells[position] = new Cell()
+        }
+
+        for(int position : minedCells) {
+            Cell cell = board.cells[position]
+            cell.plantMine()
+        }
+
+        return board
     }
 }
