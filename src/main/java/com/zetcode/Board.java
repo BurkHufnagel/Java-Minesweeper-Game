@@ -115,8 +115,8 @@ public class Board extends JPanel {
 
                 for(int index = 0; index < neighbors.length; index++) {
                     int neighbor = neighbors[index];
-                    if (cells[neighbor].isNotMined()) {     // If the neighbor isn't a mined cell
-                        cells[neighbor].incrementMinedNeighbors();                     // Increment it's number of mined neighbors.
+                    if (cells[neighbor].isNotMined()) {              // If the neighbor isn't a mined cell
+                        cells[neighbor].incrementMinedNeighbors();   //    Increment it's number of mined neighbors.
                     }
                 }
             }
@@ -124,15 +124,15 @@ public class Board extends JPanel {
     }
 
 
-    // When a cell gets opened and it's empty, open all the neighbors and if one of them is empty, repeat.
-    // This is how most of the board gets exposed.
-    private void find_empty_cells(int position) {       // position specifies an empty cell that just got opened, so open it's neighbors
-        int[] neighbors = getNeighbors(position);       // Get the neighboring cell positions
+    // When a cell gets opened and it's empty, then open all the neighbors and if one of them is empty, repeat.
+    // This cascade is how most of the board gets exposed.
+    private void find_empty_cells(int position) {                  // position specifies an empty cell that just got opened, so open it's neighbors
+        int[] neighbors = getNeighbors(position);                  // Get the neighboring cell positions
 
         for(int index = 0; index < neighbors.length; index++) {
             int neighbor = neighbors[index];
-            if (cells[neighbor].isCovered()) {         // If it's covered
-                cells[neighbor].uncover();     //   uncover it
+            if (cells[neighbor].isCovered()) {                    // If it's covered
+                cells[neighbor].uncover();                        //   uncover it
                 if (cells[neighbor].getMinedNeighbors() == 0) {   //   If it's empty, open it's neighbors
                     find_empty_cells(neighbor);
                 }
@@ -176,11 +176,11 @@ public class Board extends JPanel {
                 if (!inGame) {                                 // If the game is over
                     imageIndex = getImageIndexWhenGameIsOver(cell, imageIndex);
                 } else {                                       // If the game is still going
-                    if (cell.isFlagged() && cell.isMined()) {            //    and the cell is a flagged mine
-                        imageIndex = DRAW_MARK;                      //        set it to display a flag
+                    if (cell.isFlagged() ) {                   //    and the cell is flagged
+                        imageIndex = DRAW_MARK;                //        set it to display a flag
                     } else if (cell.isCovered()) {             //    and the cell is an unflagged mine
-                        imageIndex = DRAW_COVER;                     //         set it to display a covered cell
-                        unflaggedMines++;                             //         increment the count of unflagged mines
+                        imageIndex = DRAW_COVER;               //         set it to display a covered cell
+                        unflaggedMines++;                      //         increment the count of unflagged mines
                     }
                 }
 
