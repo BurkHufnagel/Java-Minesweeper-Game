@@ -53,78 +53,86 @@ class BoardSpec extends Specification {
     //   12  13  14  15
     //   16  17  18  19
 
-
-    def "when the field is 4x5 and getNeighbors() is called with cell 0, it should return cells 1, 4, and 5"() {
+    @Unroll
+    def "when the field is 4x5 and getNeighbors() is called with cell #cell, it should return #expectedNeighbors"() {
         given: "an instance of the Board with four columns and five rows"
         board.initBoard(4, 5, 1)
 
-        when: "calling getNeighbors() with 0 as the parameter"
-        def neighbors = board.getNeighbors(0)
+        when: "calling getNeighbors(" + cell + "}"
+        def neighbors = board.getNeighbors(cell)
 
-        then: "it should return cells 1, 4, and 5 as its neighbors"
-        neighbors.size() == 3
-        neighbors[0] == 1
-        neighbors[1] == 4
-        neighbors[2] == 5
+        then: "it should return cells " + expectedNeighbors + " as its neighbors"
+        neighbors.size() == expectedNeighbors.size()
+        for(int index = 0; index++; index < expectedNeighbors.size()) {
+            neighbors[index] == expectedNeighbors[index]
+        }
+
+        where:
+        cell || expectedNeighbors
+          0  || [1, 4, 5]
+          2  || [1, 2, 5, 6, 7]
+          3  || [2, 6, 7]
+          8  || [4, 5, 9, 12, 13]
+          9  || [4, 5, 6, 8, 10, 12, 13, 14]
+         11  || [6, 7, 10, 14, 15]
+         16  || [12, 13, 17]
+         17  || [12, 13, 14, 16, 18]
+         19  || [14, 15, 18]
     }
 
-    def "when the field is 4x5 and getNeighbors() is called with cell 3, it should return cells 2, 6, and 7"() {
-        given: "an instance of the Board with four columns and five rows"
+
+    def "getImageIndexWhenGameIsOver should return DRAW_MINE when the cell is mined and not flagged"() {
+        given: "a mined cell that is covered and not flagged"
         board.initBoard(4, 5, 1)
+        Cell cell = new Cell()
+        cell.plantMine()
 
-        when: "calling getNeighbors() with 3 as the parameter"
-        def neighbors = board.getNeighbors(3)
+        when: "getImageIndexWhenGameIsOver is called with the cell and DRAW_WRONG_MARK as parameters"
+        def imageIndex = board.getImageIndexWhenGameIsOver(cell, board.DRAW_WRONG_MARK)
 
-        then: "it should return cells 2, 6, and 7 as its neighbors"
-        neighbors.size() == 3
-        neighbors[0] == 2
-        neighbors[1] == 6
-        neighbors[2] == 7
+        then: "imageIndex should be DRAW_MINE"
+        imageIndex == board.DRAW_MINE
     }
 
-    def "when the field is 4x5 and getNeighbors() is called with cell 16, it should return cells 12, 3, and 17"() {
-        given: "an instance of the Board with four columns and five rows"
+
+    def "getImageIndexWhenGameIsOver should return DRAW_MARK when the cell is mined and flagged"() {
+        given: "a mined cell that is covered and flagged"
         board.initBoard(4, 5, 1)
+        Cell cell = new Cell()
+        cell.plantMine()
+        cell.toggleFlagged()
 
-        when: "calling getNeighbors() with 16 as the parameter"
-        def neighbors = board.getNeighbors(16)
+        when: "getImageIndexWhenGameIsOver is called with the cell and DRAW_WRONG_MARK as parameters"
+        def imageIndex = board.getImageIndexWhenGameIsOver(cell, board.DRAW_WRONG_MARK)
 
-        then: "it should return cells 12, 13, and 17 as its neighbors"
-        neighbors.size() == 3
-        neighbors[0] == 12
-        neighbors[1] == 13
-        neighbors[2] == 17
+        then: "imageIndex should be DRAW_MARK"
+        imageIndex == board.DRAW_MARK
     }
 
 
-    def "when the field is 4x5 and getNeighbors() is called with cell 19, it should return cells 14, 15, and 18"() {
-        given: "an instance of the Board with four columns and five rows"
+    def "getImageIndexWhenGameIsOver should return DRAW_WRONG_MARK when the cell is not mined and flagged"() {
+        given: "a mined cell that is covered and flagged"
         board.initBoard(4, 5, 1)
+        Cell cell = new Cell()
+        cell.toggleFlagged()
 
-        when: "calling getNeighbors() with 19 as the parameter"
-        def neighbors = board.getNeighbors(19)
+        when: "getImageIndexWhenGameIsOver is called with the cell and DRAW_MARK as parameters"
+        def imageIndex = board.getImageIndexWhenGameIsOver(cell, board.DRAW_MARK)
 
-        then: "it should return cells 14, 15, and 18 as its neighbors"
-        neighbors.size() == 3
-        neighbors[0] == 14
-        neighbors[1] == 15
-        neighbors[2] == 18
+        then: "imageIndex should be DRAW_WRONG_MARK"
+        imageIndex == board.DRAW_WRONG_MARK
     }
 
-    def "when the field is 4x5 and getNeighbors() is called with cell 2, it should return cells 1, 3, 5, 6, and 7"() {
-        given: "an instance of the Board with four columns and five rows"
+
+    def "getImageIndexWhenGameIsOver should return DRAW_COVER when the cell is not mined"() {
+        given: "a mined cell that is covered and not mined"
         board.initBoard(4, 5, 1)
+        Cell cell = new Cell()
 
-        when: "calling getNeighbors() with 2 as the parameter"
-        def neighbors = board.getNeighbors(2)
+        when: "getImageIndexWhenGameIsOver is called with the cell and DRAW_WRONG_MARK as parameters"
+        def imageIndex = board.getImageIndexWhenGameIsOver(cell, board.DRAW_WRONG_MARK)
 
-        then: "it should return cells 1, 3, 5, 6, and 7 as its neighbors"
-        neighbors.size() == 5
-        neighbors[0] == 1
-        neighbors[1] == 3
-        neighbors[2] == 5
-        neighbors[3] == 6
-        neighbors[4] == 7
+        then: "imageIndex should be DRAW_COVER"
+        imageIndex == board.DRAW_COVER
     }
-
 }

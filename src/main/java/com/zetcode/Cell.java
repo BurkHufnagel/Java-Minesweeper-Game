@@ -1,41 +1,63 @@
 package com.zetcode;
 
 public class Cell {
-    private final int column;
-    private final int row;
-    private boolean hasMine;
+    private boolean isMined = false;
     private int minedNeighbors;
     private boolean isCovered = true; // All cells start covered
+    private boolean isFlagged = false;
 
-    public Cell(int column, int row, boolean hasMine) {
-        this.column = column;
-        this.row = row;
-        this.hasMine = hasMine;
+    public Cell() {
     }
 
-    public int getRow() {
-        return row;
+
+    public boolean isMined() {
+        return isMined;
     }
 
-    public int getColumn() {
-        return column;
+
+    public boolean isNotMined() {
+        return !isMined;
     }
+
+
+    public void plantMine() {
+        isMined = true;
+    }
+
 
     public boolean isCovered() {
         return isCovered;
     }
 
+    public boolean isUncovered() {
+        return !isCovered;
+    }
+
+
     public void uncover() {
         isCovered = false;
     }
 
-    public boolean hasMine() {
-        return hasMine;
+
+    public boolean isFlagged() {
+        return isFlagged;
     }
+
+
+    public boolean isNotFlagged() {
+        return !isFlagged;
+    }
+
+
+    public void toggleFlagged() {
+        isFlagged = !isFlagged;
+    }
+
 
     public void incrementMinedNeighbors() {
         minedNeighbors++;
     }
+
 
     public int getMinedNeighbors() {
         return minedNeighbors;
